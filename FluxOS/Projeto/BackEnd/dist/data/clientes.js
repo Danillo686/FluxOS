@@ -1,0 +1,14 @@
+export let clientes = [
+    {
+        nome: "Carlos",
+        email: "jalambipau@gmail",
+        idade: 20,
+        numero: "20202020202"
+    },
+    {
+        nome: "João Favelado",
+        email: "João@gmail", // vou jantar, já colo ae
+        idade: 30,
+        numero: "30303030303"
+    }
+];
