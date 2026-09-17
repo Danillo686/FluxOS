@@ -11,4 +11,7 @@ if (!supabaseUrl || !supabaseServiceKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseServiceKey);
-// npm install express dotenv @supabase/supabase-js bcrypt; npm install -D typescript @types/node @types/express @types/bcrypt tsx
+// npm init -y; npm install express dotenv @supabase/supabase-js; npm install -D typescript @types/node @types/express @tsconfig/node24 tsx 
+//npm install bcrypt
+//npm install -D @types/bcrypt
+//
