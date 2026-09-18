@@ -1,16 +1,12 @@
 import {Router} from 'express'
-import {
-    postAttendant,
-    getAttendant,
-    putAttendant,
-    delAttendant
-} from '../controller/attendant.controller.js'
+import {postAttendant, getAttendant, putAttendant, delAttendant, getIdAttendant} from '../controller/attendant.controller.js'
 
 const rota = Router()
 
 rota.post('/Attendant', postAttendant)
-rota.put ('/Attendant:id', putAttendant)
+rota.put ('/Attendant/:id', putAttendant)
 rota.get ('/Attendant', getAttendant)
-rota.delete ('/Attendant:id', delAttendant)
+rota.get ('/Attendant/:id', getIdAttendant)
+rota.delete ('/Attendant/:id', delAttendant)
 
 export default rota

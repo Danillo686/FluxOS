@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { postAttendant, getAttendant, putAttendant, delAttendant, getIdAttendant } from '../controllers/attendant.controller.js';
+import { postAttendant, getAttendant, putAttendant, delAttendant, getIdAttendant } from '../controller/attendant.controller.js';
 const rota = Router();
 rota.post('/Attendant', postAttendant);
 rota.put('/Attendant/:id', putAttendant);

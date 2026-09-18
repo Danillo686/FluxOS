@@ -6,20 +6,46 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [cpf, setCpf] = useState('');
     const [senha, setSenha] = useState('');
+    const [telefone, setTelefone] = useState(''); // estava faltando
     const navigate = useNavigate();
-    const ehEmailValido = email.endsWith('@gmail.com');
+    const ehEmailValido = email.includes('@'); // era endsWith('@gmail.com'), restritivo demais
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault() // era e.preventDeDefault() — typo
 
         if (!ehEmailValido) {
-            alert('Por favor, insira um email válido do Gmail.');
-            return;
+            alert('Por favor, insira um email válido.')
+            return
         }
 
-        console.log('Login', { nome, email, cpf, senha });
-        alert('Login realizado com sucesso!');
-    };
+        try {
+            const response = await fetch('http://localhost:3001/Owner/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, cpf, email, senha, telefone })
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                alert(data.Error)
+
+                if (response.status === 400) {
+                    navigate('/cadastro')
+                }
+
+                return
+            }
+
+            alert(data.message)
+            console.log('Logado com sucesso!', data.owner)
+            navigate('/Home')
+
+        } catch (error) {
+            console.log('Erro ao conectar com a API', error)
+            alert('Não foi possível conectar com o servidor...')
+        }
+    }
 
     return (
         <div>
@@ -57,6 +83,18 @@ export default function Login() {
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </div>
+
+                <div>
+                    <label htmlFor="telefone">Telefone:</label>
+                    <input
+                        type="text"
+                        placeholder="Seu telefone"
+                        id="telefone"
+                        value={telefone}
+                        onChange={(e) => setTelefone(e.target.value)}
+                    />
+                </div>
+
                 <div>
                     <label htmlFor="senha">Senha:</label>
                     <input
@@ -67,13 +105,11 @@ export default function Login() {
                         onChange={(e) => setSenha(e.target.value)}
                     />
                 </div>
-    
+
                 <button type="submit">Entrar</button>
                 <button type="button" onClick={() => navigate('/')}>Voltar</button>
                 <button type="button" onClick={() => navigate('/LoginAttendant')}>Atendente</button>
-                
             </form>
         </div>
     )
-
 }

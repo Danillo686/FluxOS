@@ -1,28 +1,30 @@
 import { Request, Response } from "express"
 import { supabase } from "../supabase.js"
-import { Attendant } from "../type/Attendant.js"
+import { Customer } from "../type/Customer.js"
 import bcrypt from 'bcrypt'
 
-//POST / INSERT
 
-export const postAttendant = async (
-    req: Request<{}, {}, Attendant>,
+// POST / INSERT
+
+export const postCustomer = async (
+    req: Request<{}, {}, Customer>,
     res: Response
 ):Promise<any> => {
-    const {nome, email, senha} = req.body
+    const {cep, cpf, nome, email, senha} = req.body
 
-    if (!nome || !email || !senha) {
-        return res.status(500).json({Error: 'Por favor, preencha todos os campos.'})
+    if (!cep || !cpf || !nome || !email || !senha){
+        return res.status(500).json({Error: "Por favor, preencha todos os campos."})
     }
 
     const senhaHash = await bcrypt.hash(senha, 10)
+    // const cpfHash = await bcrypt.hash(cpf, 10)  --> Cpf não poder Hash, pois será usado outras vezes
 
-    const {data, error} = await supabase 
-    .from('Attendant')
-    .insert([{nome, email, senha: senhaHash}])
+    const {data, error} = await supabase
+    .from('Customer')
+    .insert([{cep, cpf, nome, email, senha: senhaHash}])
     .select()
-    
-    if(error) {
+
+    if (error) {
         return res.status(500).json({Error: error.message})
     }
     const time = new Date() 
@@ -31,12 +33,12 @@ export const postAttendant = async (
 
 // GET
 
-export const getAttendant = async (
-    req: Request <{}, {}, Attendant>,
+export const getCustomer = async (
+    req: Request <{}, {}, Customer>,
     res: Response
 ):Promise<any> => {
     const {data, error} = await supabase
-    .from('Attendant')
+    .from('Customer')
     .select('*')
 
     if (error) {
@@ -48,14 +50,14 @@ export const getAttendant = async (
 
 // GET/:ID
 
-export const getIdAttendant = async (
-    req: Request <{id: string}, {}, Attendant>,
+export const getIdCustomer = async (
+    req: Request <{id: string}, {}, Customer>,
     res: Response
 ):Promise<any> => {
     const {id} = req.params
 
     const {data, error} = await supabase
-    .from('Attendant')
+    .from('Customer')
     .select('*')
     .eq('id', id)
 
@@ -66,16 +68,16 @@ export const getIdAttendant = async (
     return res.status(200).json({message:`GET executado com sucesso! \n`, data:data, horario:`|${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}:${time.getMilliseconds()}|`, date: `|${time.getDate()}/${time.getMonth() + 1}/${time.getFullYear()}|`})
 }
 
-//UPDATE / PUT
+// UPDATE / PUT
 
-export const putAttendant = async (
-    req: Request<{id:string}, {}, Attendant>,
+export const putCustomer = async (
+    req: Request<{id: string}, {}, Customer>,
     res: Response
 ):Promise<any> => {
     const {id} = req.params
-    
+
     const {data, error} = await supabase
-    .from('Attendant')
+    .from('Customer')
     .update(req.body)
     .eq('id', id)
     .select()
@@ -83,28 +85,26 @@ export const putAttendant = async (
     if (error) {
         return res.status(500).json({Error: error.message})
     }
-
-    // const nome = data[0].nome
     const time = new Date() 
     return res.status(200).json({message:`${data[0].nome} foi atulizado com sucesso! \n`, data:data, horario:`|${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}:${time.getMilliseconds()}|`, date: `|${time.getDate()}/${time.getMonth() + 1}/${time.getFullYear()}|`})
 }
 
-//DELETE DEL
+//DELETE / DEL
 
-export const delAttendant = async (
-    req: Request <{id:string}>,
+export const delCustomer = async (
+    req: Request<{id: string}>,
     res: Response
 ):Promise<any> => {
     const {id} = req.params
 
-    const {data, error} = await supabase 
-    .from('Attendant')
+    const {data, error} = await supabase
+    .from('Customer')
     .delete()
     .eq('id', id)
-    .select() 
+    .select()
 
     if (error) {
-        return res.status(500).json({Error: error.message})
+       return res.status(500).json({Error: error.message})
     }
     const time = new Date() 
     return res.status(200).json({message: `${data[0].nome} deletado com sucesso!`, data:data, horario:`|${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}:${time.getMilliseconds()}|`, date: `|${time.getDate()}/${time.getMonth() + 1}/${time.getFullYear()}|`})

@@ -1,2 +1,6 @@
-npm install cors
-npm install -D @types/cors
+backend:
+//npm init -y; npm install express dotenv @supabase/supabase-js; npm install -D typescript @types/node @types/express @tsconfig/node24 tsx 
+//npm install bcrypt
+//npm install -D @types/bcrypt
+//npm install cors
+//npm install -D @types/cors
