@@ -1,12 +1,22 @@
 import {Request, Response} from "express"
 import {supabase} from "../supabase.js"
+import { generateUniqueCode } from "../utils/generateUniqueCode.js"
 
 export async function register (
     req: Request,
     res: Response
 
 ) {
-    const {email, password, name, cpf, phone, zip_code} = req.body //--> desestruturação
+    const {
+        email, 
+        password, 
+        name, 
+        cpf, 
+        phone, 
+        zip_code
+    } = req.body //--> desestruturação
+
+    const security_code = await generateUniqueCode()
 
     const {data, error} = await supabase.auth.signUp({email, password})
 
@@ -20,11 +30,18 @@ export async function register (
         return res.status(400).json({message:`Não foi possível obter o ID do usuário`})
     }
 
+    console.log("Service Key carregada:", !!process.env.SUPABASE_SERVICE_ROLE_KEY)
+
+    //INSERT
     const {error: profileError} = await supabase 
     .from('users')
-    .insert({id: userId, name, cpf, phone, zip_code, role: "cliente"})
+    .insert({id: userId, name, cpf, phone, zip_code, security_code, role: "cliente"})
+
+
 
     if (profileError) {
+        await supabase.auth.admin.deleteUser(userId) //Deletar o User caso de erro
+
         return res.status(400).json({message: profileError.message})
     }
 
