@@ -60,6 +60,13 @@ USING (
     id = auth.uid()
 );
 
+create policy "Backend can insert customers"
+on public.customer
+for insert
+with check (
+    role = 'customer'
+);
+
 ALTER TABLE public.users
 ADD CONSTRAINT users_role_check
 CHECK (
@@ -71,5 +78,11 @@ CHECK (
         'funcionario'
     )
 );
+
+CREATE SEQUENCE vehicles_id_vehicles_seq;
+
+
+
+
 __________FRONTEND__________
 npm install recharts lucide-react
